@@ -1,10 +1,10 @@
 package otus.homework.coroutines
 
-import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.Response
 
 interface CatsService {
 
     @GET("fact")
-    fun getCatFact() : Call<Fact>
+    suspend fun getCatFact(): Response<Fact>
 }
