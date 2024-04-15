@@ -23,10 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         if (isFinishing) {
-            catsPresenter.apply {
-                cancelJob()
-                detachView()
-            }
+            catsPresenter.detachView()
         }
         super.onStop()
     }
