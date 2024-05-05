@@ -15,8 +15,7 @@ import otus.homework.coroutines.state.Result
 import retrofit2.Response
 
 class CatsViewModel(
-    private val catsServiceFact: CatsServiceFact,
-    private val catsServicePicture: CatsServicePicture
+    private val catsServiceFact: CatsServiceFact, private val catsServicePicture: CatsServicePicture
 ) : ViewModel() {
 
     private val _state: MutableLiveData<Result?> = MutableLiveData(null)
@@ -36,12 +35,9 @@ class CatsViewModel(
             val factResponse: Response<Fact> = factDeferred.await()
             val pictureDtoResponse: Response<List<PictureDto>> = pictureDtoDeferred.await()
             if (isResponseCorrect(factResponse) && isResponseCorrect(pictureDtoResponse)) {
-                _state.postValue(
-                    Result.Success(
-                        DataDto(
-                            factResponse.body()!!,
-                            pictureDtoResponse.body()!!.first()
-                        )
+                _state.value = Result.Success(
+                    DataDto(
+                        factResponse.body()!!, pictureDtoResponse.body()!!.first()
                     )
                 )
             }
@@ -71,15 +67,13 @@ class CatsViewModel(
         val factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
-                modelClass: Class<T>,
-                extras: CreationExtras
+                modelClass: Class<T>, extras: CreationExtras
             ): T {
                 // Get the Application object from extras
                 val application = checkNotNull(extras[APPLICATION_KEY])
                 val di = (application as App).diContainer
                 return CatsViewModel(
-                    di.serviceFact,
-                    di.servicePicture
+                    di.serviceFact, di.servicePicture
                 ) as T
             }
         }
