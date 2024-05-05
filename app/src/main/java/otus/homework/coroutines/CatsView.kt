@@ -2,9 +2,13 @@ package otus.homework.coroutines
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.squareup.picasso.Picasso
 
 class CatsView @JvmOverloads constructor(
     context: Context,
@@ -12,21 +16,29 @@ class CatsView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr), ICatsView {
 
-    var presenter :CatsPresenter? = null
+    //var presenter: CatsPresenter? = null
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        findViewById<Button>(R.id.button).setOnClickListener {
-            presenter?.onInitComplete()
-        }
     }
 
-    override fun populate(fact: Fact) {
-        findViewById<TextView>(R.id.fact_textView).text = fact.fact
+    override fun populate(data: DataDto) {
+        findViewById<TextView>(R.id.fact_textView).text = data.fact.fact
+        Picasso.get().load(data.pictureDto.url)
+            .into(findViewById<ImageView>(R.id.imageView))
+    }
+
+    override fun showToast(toastText: String) =
+        Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
+
+    override fun setOnButtonClickListener(onClick: OnClickListener) {
+        findViewById<Button>(R.id.button).setOnClickListener(onClick)
     }
 }
 
 interface ICatsView {
 
-    fun populate(fact: Fact)
+    fun populate(data: DataDto)
+    fun showToast(toastText: String)
+    fun setOnButtonClickListener(onClick: View.OnClickListener)
 }
